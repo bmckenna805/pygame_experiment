@@ -3,7 +3,7 @@ import pygame
 import tileset
 
 class Level(object):
-    def load_file(self, filename="map.default"):
+    def load_file(self, filename="data/map.default"):
         self.map = []
         self.key = {}
         parser = configparser.ConfigParser()
@@ -47,7 +47,7 @@ class Level(object):
 
     def render(self):
         wall = self.is_wall
-        tiles = MAP_CACHE[self.tileset]
+        tiles = MAP_CACHE.__getitem__("data/tileset.png")
         image = pygame.Surface((self.width*MAP_TILE_WIDTH, self.height*MAP_TILE_HEIGHT))
         overlays = {}
         for map_y, line in enumerate(self.map):
@@ -76,13 +76,10 @@ if __name__ == "__main__":
 
     MAP_TILE_WIDTH = 32
     MAP_TILE_HEIGHT = 32
-    MAP_CACHE = {
-        'tileset.png': tileset.load_tile_table('tileset.png', MAP_TILE_WIDTH,
-                                      MAP_TILE_HEIGHT),
-    }
+    MAP_CACHE = tileset.TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
 
     level = Level()
-    level.load_file('map.default')
+    level.load_file('data/map.default')
 
     clock = pygame.time.Clock()
 

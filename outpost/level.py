@@ -77,6 +77,8 @@ class Level(object):
                     except (ValueError, KeyError):
                         # Default to wall tile
                         tile = 6, 0
+                # Commented out: overlay for vision obscuring tiles
+                
                 # Add overlays if the wall may be obscuring something
                 # if not wall(map_x, map_y-1):
                 #     if wall(map_x+1, map_y) and wall(map_x-1, map_y):
@@ -102,15 +104,21 @@ class Level(object):
 
 
 if __name__ == "__main__":
+'''Load default map and display to screen'''
+
+    # set up screen
     screen = pygame.display.set_mode((680, 480))
 
+    # import tileset
     MAP_TILE_WIDTH = 32
     MAP_TILE_HEIGHT = 32
     MAP_CACHE = tileset.TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
 
+    # load level
     level = Level()
     level.load_file('data/map.default')
 
+    # load sprites
     SPRITE_CACHE = tileset.TileCache(32, 32)
     overlays = pygame.sprite.RenderUpdates()
     sprites = pygame.sprite.RenderUpdates()
@@ -118,27 +126,37 @@ if __name__ == "__main__":
         sprite = sprites.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
         sprites.add(sprite)
 
+    # set up game clock
     clock = pygame.time.Clock()
-
+    
+    # renger level
     background, overlay_dict = level.render()
+
+    # render sprite overlay
     for (x, y), image in overlay_dict.items():
         overlay = pygame.sprite.Sprite(overlays)
         overlay.image = image
         overlay.rect = image.get_rect().move(x * 24, y * 16 - 16)
+
+    # render background
     screen.blit(background, (0, 0))
+
+    # render sprite overlay
     overlays.draw(screen)
     dirty = sprites.draw(screen)
     pygame.display.flip()
 
+    # enter basic game loop
     game_over = False
     while not game_over:
 
-        # XXX draw all the objects here
-
+        # redraw sprites
         sprites.clear(screen, background)
         dirty = sprites.draw(screen)
         overlays.draw(screen)
         pygame.display.update(dirty)
+
+        # tick clock away
         clock.tick(15)
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:

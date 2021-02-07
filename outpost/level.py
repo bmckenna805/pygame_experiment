@@ -3,6 +3,7 @@ import pygame
 import tileset
 import sprites
 
+
 class Level(object):
     def load_file(self, filename="data/map.default"):
         # empty lists and dicts to represent level
@@ -44,7 +45,8 @@ class Level(object):
         """Tell if the specified flag is set for position on the map."""
 
         value = self.get_tile(x, y).get(name)
-        return value in (True, 1, 'true', 'yes', 'True', 'Yes', '1', 'on', 'On')
+        return value in (True, 1, 'true', 'yes',
+                         'True', 'Yes', '1', 'on', 'On')
 
     def is_wall(self, x, y):
         """Is there a wall?"""
@@ -58,12 +60,13 @@ class Level(object):
             return True
         return self.get_bool(x, y, 'block')
 
-    def render(self):
+    def render(self, MAP_CACHE, MAP_TILE_HEIGHT, MAP_TILE_WIDTH):
         wall = self.is_wall
 
         # load tileset
         tiles = MAP_CACHE.__getitem__(self.tileset)
-        image = pygame.Surface((self.width*MAP_TILE_WIDTH, self.height*MAP_TILE_HEIGHT))
+        image = pygame.Surface((self.width*MAP_TILE_WIDTH,
+                                self.height*MAP_TILE_HEIGHT))
 
         # Render map.  Todo: add in check for overlay
         overlays = {}
@@ -78,7 +81,7 @@ class Level(object):
                         # Default to wall tile
                         tile = 6, 0
                 # Commented out: overlay for vision obscuring tiles
-                
+
                 # Add overlays if the wall may be obscuring something
                 # if not wall(map_x, map_y-1):
                 #     if wall(map_x+1, map_y) and wall(map_x-1, map_y):
@@ -104,7 +107,7 @@ class Level(object):
 
 
 if __name__ == "__main__":
-'''Load default map and display to screen'''
+    '''Load default map and display to screen'''
 
     # set up screen
     screen = pygame.display.set_mode((680, 480))
@@ -121,16 +124,18 @@ if __name__ == "__main__":
     # load sprites
     SPRITE_CACHE = tileset.TileCache(32, 32)
     overlays = pygame.sprite.RenderUpdates()
-    sprites = pygame.sprite.RenderUpdates()
+    things = pygame.sprite.RenderUpdates()
     for pos, tile in level.sprites.items():
-        sprite = sprites.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
-        sprites.add(sprite)
+        sprite = things.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
+        things.add(sprite)
 
     # set up game clock
     clock = pygame.time.Clock()
-    
+
     # renger level
-    background, overlay_dict = level.render()
+    background, overlay_dict = level.render(MAP_CACHE,
+                                            MAP_TILE_HEIGHT,
+                                            MAP_TILE_WIDTH)
 
     # render sprite overlay
     for (x, y), image in overlay_dict.items():
@@ -143,7 +148,7 @@ if __name__ == "__main__":
 
     # render sprite overlay
     overlays.draw(screen)
-    dirty = sprites.draw(screen)
+    dirty = things.draw(screen)
     pygame.display.flip()
 
     # enter basic game loop
@@ -151,8 +156,8 @@ if __name__ == "__main__":
     while not game_over:
 
         # redraw sprites
-        sprites.clear(screen, background)
-        dirty = sprites.draw(screen)
+        things.clear(screen, background)
+        dirty = things.draw(screen)
         overlays.draw(screen)
         pygame.display.update(dirty)
 
@@ -163,5 +168,3 @@ if __name__ == "__main__":
                 game_over = True
             elif event.type == pygame.locals.KEYDOWN:
                 pressed_key = event.key
-
-

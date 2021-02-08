@@ -1,20 +1,24 @@
 import pygame
 import tileset
 import level
+import player
 
 
 class Game(pygame.sprite.Sprite):
-    def __init__(self, pos=(0, 0), frames=None):
+    def __init__(self):
         self.screen = pygame.display.set_mode((680, 480))
 
         self.MAP_TILE_WIDTH = 32
         self.MAP_TILE_HEIGHT = 32
         self.MAP_CACHE = tileset.TileCache(self.MAP_TILE_WIDTH,
                                            self.MAP_TILE_HEIGHT)
+
+        # new game
         self.level = level.Level()
         self.level.load_file('data/map.default')
         self.overlays, self.background = self.load_map()
         self.sprites = self.load_sprites(level)
+        self.main_character = player.Player(pos=(6, 3))
 
         self.clock = pygame.time.Clock()
         self.load_display(self.screen, self.overlays,
@@ -44,6 +48,7 @@ class Game(pygame.sprite.Sprite):
         SPRITE_CACHE = tileset.TileCache(32, 32)
         self.overlays = pygame.sprite.RenderUpdates()
         sprites = pygame.sprite.RenderUpdates()
+        # sprites.add(player)
         for pos, tile in self.level.sprites.items():
             sprite = sprites.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
             sprites.add(sprite)

@@ -29,7 +29,9 @@ class Level(object):
         for y, line in enumerate(self.map):
             for x, c in enumerate(line):
                 if not self.is_wall(x, y) and 'sprite' in self.key[c]:
-                    self.sprites[(x, y)] = self.key[c]
+                    self.sprites[(x, y)] = self.key[c]['tile'].split(',')
+                if not self.is_wall(x, y) and 'player' in self.key[c]:
+                    self.player = self.key[c]['tile'].split(',')
 
     def get_tile(self, x, y):
         try:
@@ -95,8 +97,9 @@ class Level(object):
                 #     overlays[(map_x, map_y)] = tiles[tile[0]][tile[1]]
                 else:
                     try:
-                        tile = self.key[c]['tile'].split(',')
-                        tile = int(tile[0]), int(tile[1])
+                        if 'player' not in self.key[c] and 'sprite' not in self.key[c]:
+                            tile = self.key[c]['tile'].split(',')
+                            tile = int(tile[0]), int(tile[1])
                     except (ValueError, KeyError):
                         # Default to ground tile
                         tile = 3, 0
@@ -122,12 +125,17 @@ if __name__ == "__main__":
     level.load_file('data/map.default')
 
     # load sprites
-    SPRITE_CACHE = tileset.TileCache(32, 32)
     overlays = pygame.sprite.RenderUpdates()
     things = pygame.sprite.RenderUpdates()
+
+    block_list = pygame.sprite.Group()
+    all_sprites_list = pygame.sprite.Group()
+
     for pos, tile in level.sprites.items():
-        sprite = things.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
-        things.add(sprite)
+        tile = int(tile[0]), int(tile[1])
+        thing = sprites.Sprite(pos, tile)
+        block_list.add(thing)
+        all_sprites_list.add(thing)
 
     # set up game clock
     clock = pygame.time.Clock()
@@ -148,7 +156,7 @@ if __name__ == "__main__":
 
     # render sprite overlay
     overlays.draw(screen)
-    dirty = things.draw(screen)
+    all_sprites_list.draw(screen)
     pygame.display.flip()
 
     # enter basic game loop

@@ -40,7 +40,7 @@ class TileCache:
 
 
 if __name__ == '__main__':
-    '''Load default tileset and display it broken into each tile for reference '''
+    '''Load default tileset and display it broken into tiles'''
     MAP_TILE_WIDTH = 32
     MAP_TILE_HEIGHT = 32
 

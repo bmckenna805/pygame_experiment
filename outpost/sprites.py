@@ -11,14 +11,16 @@ class Sprite(pygame.sprite.Sprite):
         self.image = images[frame[0]][frame[1]]
         self.rect = self.image.get_rect()
         self.pos = pos
+        self._set_pos(pos)
+
 
     def _get_pos(self):
         """Check the current position of the sprite on the map."""
-        return (self.rect.midbottom[0]), (self.rect.midbottom[1])
+        return (self.rect.topleft[0]/32), (self.rect.topleft[1]/32)
 
     def _set_pos(self, pos):
         """Set the position and depth of the sprite on the map."""
-        self.rect.midbottom = pos[0]*32, pos[1]*32
+        self.rect.topleft = (pos[0]*32), (pos[1]*32)
         self.depth = self.rect.midbottom[1]
 
     def move(self, dx, dy):

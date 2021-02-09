@@ -13,7 +13,6 @@ class Sprite(pygame.sprite.Sprite):
         self.pos = pos
         self._set_pos(pos)
 
-
     def _get_pos(self):
         """Check the current position of the sprite on the map."""
         return (self.rect.topleft[0]/32), (self.rect.topleft[1]/32)

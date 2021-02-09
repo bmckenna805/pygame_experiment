@@ -42,3 +42,4 @@ sprite = true
 [p]
 name = player
 tile = 5,6
+spawn = true

@@ -2,6 +2,7 @@ import configparser
 import pygame
 import tileset
 import sprites
+import player
 
 
 class Level(object):
@@ -10,6 +11,7 @@ class Level(object):
         self.map = []
         self.key = {}
         self.sprites = {}
+        self.player = {}
 
         # parse the level config from file
         parser = configparser.ConfigParser()
@@ -30,8 +32,9 @@ class Level(object):
             for x, c in enumerate(line):
                 if not self.is_wall(x, y) and 'sprite' in self.key[c]:
                     self.sprites[(x, y)] = self.key[c]['tile'].split(',')
-                if not self.is_wall(x, y) and 'player' in self.key[c]:
-                    self.player = self.key[c]['tile'].split(',')
+                if not self.is_wall(x, y) and 'spawn' in self.key[c]:
+                    self.player['tile'] = self.key[c]['tile'].split(',')
+                    self.player['pos'] = (x, y)
 
     def get_tile(self, x, y):
         try:
@@ -82,6 +85,7 @@ class Level(object):
                     except (ValueError, KeyError):
                         # Default to wall tile
                         tile = 6, 0
+
                 # Commented out: overlay for vision obscuring tiles
 
                 # Add overlays if the wall may be obscuring something
@@ -97,9 +101,11 @@ class Level(object):
                 #     overlays[(map_x, map_y)] = tiles[tile[0]][tile[1]]
                 else:
                     try:
-                        if 'player' not in self.key[c] and 'sprite' not in self.key[c]:
+                        if 'spawn' not in self.key[c] and 'sprite' not in self.key[c]:
                             tile = self.key[c]['tile'].split(',')
                             tile = int(tile[0]), int(tile[1])
+                        else:
+                            tile = 3,0
                     except (ValueError, KeyError):
                         # Default to ground tile
                         tile = 3, 0
@@ -137,10 +143,18 @@ if __name__ == "__main__":
         block_list.add(thing)
         all_sprites_list.add(thing)
 
+    # set up player
+    tile = [level.player['tile'][0], level.player['tile'][1]]
+    tile = int(tile[0]), int(tile[1])
+    pos = (level.player['pos'][0], level.player['pos'][1])
+    pos = int(pos[0]), int(pos[1])
+    player = player.Player(pos, tile)
+    all_sprites_list.add(player)
+
     # set up game clock
     clock = pygame.time.Clock()
 
-    # renger level
+    # render level
     background, overlay_dict = level.render(MAP_CACHE,
                                             MAP_TILE_HEIGHT,
                                             MAP_TILE_WIDTH)

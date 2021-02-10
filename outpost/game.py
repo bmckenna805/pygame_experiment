@@ -1,7 +1,8 @@
 import pygame
 import tileset
 import level
-import player
+import sprites
+import player as pc
 
 
 class Game(pygame.sprite.Sprite):
@@ -17,12 +18,11 @@ class Game(pygame.sprite.Sprite):
         self.level = level.Level()
         self.level.load_file('data/map.default')
         self.overlays, self.background = self.load_map()
-        self.sprites = self.load_sprites(level)
-        self.main_character = player.Player(pos=(6, 3))
+        self.block_list, self.all_sprites_list, self.player = self.load_sprites(level)
 
         self.clock = pygame.time.Clock()
         self.load_display(self.screen, self.overlays,
-                          self.sprites, self.background)
+                          self.all_sprites_list, self.background)
 
     def __load__(self):
         print('do stuff')
@@ -31,40 +31,50 @@ class Game(pygame.sprite.Sprite):
         print('do stuff')
 
     def load_map(self):
-
         background, overlay_dict = self.level.render(self.MAP_CACHE,
                                                      self.MAP_TILE_HEIGHT,
                                                      self.MAP_TILE_WIDTH)
         overlays = pygame.sprite.RenderUpdates()
         for (x, y), image in overlay_dict.items():
             overlay = pygame.sprite.Sprite(overlays)
-
             overlay.image = image
             overlay.rect = image.get_rect().move(x * 24, y * 16 - 16)
-
         return overlays, background
 
     def load_sprites(self, level):
-        SPRITE_CACHE = tileset.TileCache(32, 32)
+        # load sprites
         self.overlays = pygame.sprite.RenderUpdates()
-        sprites = pygame.sprite.RenderUpdates()
-        # sprites.add(player)
+        # create sprite groups
+        block_list = pygame.sprite.Group()
+        all_sprites_list = pygame.sprite.Group()
+        # get sprites
         for pos, tile in self.level.sprites.items():
-            sprite = sprites.Sprite(pos, SPRITE_CACHE[tile["sprite"]])
-            sprites.add(sprite)
-        return sprites
+            tile = int(tile[0]), int(tile[1])
+            thing = sprites.Sprite(pos, tile)
+            block_list.add(thing)
+            all_sprites_list.add(thing)
+        # get player sprite
+        tile = [self.level.player['tile'][0], self.level.player['tile'][1]]
+        tile = int(tile[0]), int(tile[1])
+        pos = (self.level.player['pos'][0], self.level.player['pos'][1])
+        pos = int(pos[0]), int(pos[1])
+        player = pc.Player(pos, tile)
+        all_sprites_list.add(player)
+        # return sprite groups and player
+        return block_list, all_sprites_list, player
 
-    def load_display(self, screen, overlays, sprites, background):
+    def load_display(self, screen, overlays, all_sprites_list, background):
+        # render background
         screen.blit(background, (0, 0))
+        # render sprite layers
+        all_sprites_list.draw(screen)
         overlays.draw(screen)
-        dirty = sprites.draw(screen)
         pygame.display.flip()
 
-    def reload_display(self, screen, overlays, sprites, background):
-        sprites.clear(screen, background)
-        dirty = sprites.draw(screen)
+    def reload_display(self, screen, overlays, all_sprites_list, background):
+        all_sprites_list.clear(screen, background)
+        all_sprites_list.draw(screen)
         overlays.draw(screen)
-        pygame.display.update(dirty)
 
 
 if __name__ == '__main__':
@@ -72,7 +82,7 @@ if __name__ == '__main__':
     game_over = False
     while not game_over:
         game.reload_display(game.screen, game.overlays,
-                            game.sprites, game.background)
+                            game.all_sprites_list, game.background)
         game.clock.tick(15)
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:

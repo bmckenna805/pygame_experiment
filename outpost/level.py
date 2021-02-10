@@ -169,8 +169,8 @@ if __name__ == "__main__":
     screen.blit(background, (0, 0))
 
     # render sprite overlay
-    overlays.draw(screen)
     all_sprites_list.draw(screen)
+    overlays.draw(screen)
     pygame.display.flip()
 
     # enter basic game loop
@@ -178,10 +178,9 @@ if __name__ == "__main__":
     while not game_over:
 
         # redraw sprites
-        things.clear(screen, background)
-        dirty = things.draw(screen)
+        all_sprites_list.clear(screen, background)
+        all_sprites_list.draw(screen)
         overlays.draw(screen)
-        pygame.display.update(dirty)
 
         # tick clock away
         clock.tick(15)

@@ -8,7 +8,10 @@ import player as pc
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         self.screen = pygame.display.set_mode((680, 480))
-
+        # set up font
+        font = pygame.font.SysFont(None, 20)
+        
+        #set up tileset
         self.MAP_TILE_WIDTH = 32
         self.MAP_TILE_HEIGHT = 32
         self.MAP_CACHE = tileset.TileCache(self.MAP_TILE_WIDTH,
@@ -19,26 +22,32 @@ class Game(pygame.sprite.Sprite):
         self.level.load_file('data/map.default')
         self.overlays, self.background = self.load_map()
         self.block_list, self.all_sprites_list, self.player = self.load_sprites(level)
-
+        
+        # start game clock
         self.clock = pygame.time.Clock()
+
+        # display everything
         self.load_display(self.screen, self.overlays,
                           self.all_sprites_list, self.background)
 
     def __load__(self):
-        print('do stuff')
+        print('load game from a file')
 
     def __save__(self):
-        print('do stuff')
+        print('save a game to a file')
 
     def load_map(self):
+        # render the level
         background, overlay_dict = self.level.render(self.MAP_CACHE,
                                                      self.MAP_TILE_HEIGHT,
                                                      self.MAP_TILE_WIDTH)
+        # render overlays
         overlays = pygame.sprite.RenderUpdates()
         for (x, y), image in overlay_dict.items():
             overlay = pygame.sprite.Sprite(overlays)
             overlay.image = image
             overlay.rect = image.get_rect().move(x * 24, y * 16 - 16)
+        # return both for future use in rendering
         return overlays, background
 
     def load_sprites(self, level):
@@ -66,15 +75,16 @@ class Game(pygame.sprite.Sprite):
     def load_display(self, screen, overlays, all_sprites_list, background):
         # render background
         screen.blit(background, (0, 0))
-        # render sprite layers
         all_sprites_list.draw(screen)
         overlays.draw(screen)
+        # flip display to render sprites 
         pygame.display.flip()
 
     def reload_display(self, screen, overlays, all_sprites_list, background):
         all_sprites_list.clear(screen, background)
         all_sprites_list.draw(screen)
         overlays.draw(screen)
+        # flip display to render updates
         pygame.display.flip()
 
 
@@ -90,12 +100,20 @@ if __name__ == '__main__':
                 game_over = True
             elif event.type == pygame.locals.KEYDOWN:
                 if event.key == pygame.K_UP or event.key == ord('w'):
-                    game.player.move(0,-32)
+                    position = game.player._get_pos()
+                    if not game.level.is_blocking(int(position[0]), int(position[1]) - 1):
+                        game.player.move(0,-32)
                 if event.key == pygame.K_LEFT or event.key == ord('a'):
-                    game.player.move(-32,0)
+                    position = game.player._get_pos()
+                    if not game.level.is_blocking(int(position[0]) - 1, int(position[1])):
+                        game.player.move(-32,0)
                 if event.key == pygame.K_DOWN or event.key == ord('s'):
-                    game.player.move(0,32)
+                    position = game.player._get_pos()
+                    if not game.level.is_blocking(int(position[0]), int(position[1]) + 1):
+                        game.player.move(0,32)
                 if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                    game.player.move(32,0)
+                    position = game.player._get_pos()
+                    if not game.level.is_blocking(int(position[0]) + 1, int(position[1])):
+                        game.player.move(32,0)
                 if event.key == ord('q'):
                     game_over = True

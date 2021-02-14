@@ -75,6 +75,7 @@ class Game(pygame.sprite.Sprite):
         all_sprites_list.clear(screen, background)
         all_sprites_list.draw(screen)
         overlays.draw(screen)
+        pygame.display.flip()
 
 
 if __name__ == '__main__':
@@ -88,4 +89,13 @@ if __name__ == '__main__':
             if event.type == pygame.locals.QUIT:
                 game_over = True
             elif event.type == pygame.locals.KEYDOWN:
-                pressed_key = event.key
+                if event.key == pygame.K_UP or event.key == ord('w'):
+                    game.player.move(0,-32)
+                if event.key == pygame.K_LEFT or event.key == ord('a'):
+                    game.player.move(-32,0)
+                if event.key == pygame.K_DOWN or event.key == ord('s'):
+                    game.player.move(0,32)
+                if event.key == pygame.K_RIGHT or event.key == ord('d'):
+                    game.player.move(32,0)
+                if event.key == ord('q'):
+                    game_over = True

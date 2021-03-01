@@ -1,9 +1,15 @@
-'''
-    Outpost Tileset Cache
+'''Outpost Tileset Cache
+Usage:
+    tileset.py [--input=<file>]
+
+Options:
+    -h --help       Show this screen.
+    --input=<file>  [default: data/tileset.png]
 '''
 
 import pygame
 import pygame.locals
+from docopt import docopt
 
 
 class TileCache:
@@ -44,6 +50,10 @@ if __name__ == '__main__':
     MAP_TILE_WIDTH = 32
     MAP_TILE_HEIGHT = 32
 
+    # load docopt
+    arguments = docopt(__doc__)
+    print(arguments)
+
     # Set up pygame screen
     pygame.init()
     screen = pygame.display.set_mode((600, 400))
@@ -51,7 +61,7 @@ if __name__ == '__main__':
 
     # Create tileset cache
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
-    table = MAP_CACHE.__getitem__("data/tileset.png")
+    table = MAP_CACHE.__getitem__(arguments['--input'])
 
     # Display tileset to the pygame screen
     for x, row in enumerate(table):

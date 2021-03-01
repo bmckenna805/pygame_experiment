@@ -1,5 +1,16 @@
-import configparser
+'''Outpost Level Loader
+Usage:
+    level.py [--input=<file>]
+
+Options:
+    -h --help       Show this screen.
+    --input=<file>  [default: data/map.default]
+'''
+
+
+from docopt import docopt
 import pygame
+import configparser
 import tileset
 import sprites
 import player
@@ -118,6 +129,9 @@ class Level(object):
 if __name__ == "__main__":
     '''Load default map and display to screen'''
 
+    # load docopt
+    arguments = docopt(__doc__)
+
     # set up screen
     screen = pygame.display.set_mode((680, 480))
 
@@ -128,7 +142,7 @@ if __name__ == "__main__":
 
     # load level
     level = Level()
-    level.load_file('data/map.default')
+    level.load_file(arguments['--input'])
 
     # load sprites
     overlays = pygame.sprite.RenderUpdates()

@@ -35,8 +35,9 @@ I included a [tileset](https://tazmoe.itch.io/sci-fi-rougelike) that is free on 
 
 1. make a new tileset that isn't someone else's intellectual property
 2. sprite tiles for : player character, interacterables, and enemies
-3. Update level loader to load a level file supplied at launch
-4. Update tileset loader to load a tileset supplied at launch
-5. Implement a status box in game screen
-6. Design more levels, add in transitioning between maps
-7. If designing by hand is a pain, design a level designing tool (big project)
+3. Implement a status box in game screen
+4. Design more levels, add in transitioning between maps
+5. If designing by hand is a pain, design a level designing tool (big project)
+6. Add a farming map/game loop
+7. Add a mining map/game loop
+8. Add running a shop in the main map

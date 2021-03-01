@@ -8,8 +8,6 @@ import player as pc
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         self.screen = pygame.display.set_mode((680, 480))
-        # set up font
-        font = pygame.font.SysFont(None, 20)
         
         #set up tileset
         self.MAP_TILE_WIDTH = 32

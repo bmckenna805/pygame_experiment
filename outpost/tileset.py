@@ -4,7 +4,7 @@ Usage:
 
 Options:
     -h --help       Show this screen.
-    --input=<file>  [default: data/tileset.png]
+    --input=<file>  [default: data/tileset.bmp]
 '''
 
 import pygame

@@ -6,7 +6,7 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, pos, frame):
         super(Sprite, self).__init__()
         SPRITE_CACHE = tileset.TileCache(32, 32)
-        images = SPRITE_CACHE.__getitem__('data/tileset.png')
+        images = SPRITE_CACHE.__getitem__('data/tileset.bmp')
         self.image = pygame.Surface([32, 32])
         self.image = images[frame[0]][frame[1]]
         self.rect = self.image.get_rect()

@@ -11,13 +11,13 @@ Options:
 from docopt import docopt
 import pygame
 import configparser
-import tileset
-import sprites
-import player
+import sprites.tileset as tileset
+import sprites.sprites as sprites
+import sprites.player as player
 
 
 class Level(object):
-    def load_file(self, filename="data/map.default"):
+    def load_file(self, filename="levels/data/map.default"):
         # empty lists and dicts to represent level
         self.map = []
         self.key = {}
@@ -116,7 +116,7 @@ class Level(object):
                             tile = self.key[c]['tile'].split(',')
                             tile = int(tile[0]), int(tile[1])
                         else:
-                            tile = 3,0
+                            tile = 3, 0
                     except (ValueError, KeyError):
                         # Default to ground tile
                         tile = 3, 0

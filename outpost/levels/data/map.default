@@ -1,5 +1,5 @@
 [level]
-tileset = data/tileset.bmp
+tileset = sprites/data/tileset.bmp
 map = 0###################0
       0#00,......#####.s##0
       0#00....,..#...#.###0

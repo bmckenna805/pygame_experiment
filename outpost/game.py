@@ -1,15 +1,15 @@
 import pygame
-import tileset
-import level
-import sprites
-import player as pc
+import sprites.tileset as tileset
+import levels.level as level
+import sprites.sprites as sprites
+import sprites.player as pc
 
 
 class Game(pygame.sprite.Sprite):
     def __init__(self):
         self.screen = pygame.display.set_mode((680, 480))
-        
-        #set up tileset
+
+        # set up tileset
         self.MAP_TILE_WIDTH = 32
         self.MAP_TILE_HEIGHT = 32
         self.MAP_CACHE = tileset.TileCache(self.MAP_TILE_WIDTH,
@@ -17,10 +17,10 @@ class Game(pygame.sprite.Sprite):
 
         # new game
         self.level = level.Level()
-        self.level.load_file('data/map.default')
+        self.level.load_file('levels/data/map.default')
         self.overlays, self.background = self.load_map()
         self.block_list, self.all_sprites_list, self.player = self.load_sprites(level)
-        
+
         # start game clock
         self.clock = pygame.time.Clock()
 
@@ -75,7 +75,7 @@ class Game(pygame.sprite.Sprite):
         screen.blit(background, (0, 0))
         all_sprites_list.draw(screen)
         overlays.draw(screen)
-        # flip display to render sprites 
+        # flip display to render sprites
         pygame.display.flip()
 
     def reload_display(self, screen, overlays, all_sprites_list, background):
@@ -100,18 +100,18 @@ if __name__ == '__main__':
                 if event.key == pygame.K_UP or event.key == ord('w'):
                     position = game.player._get_pos()
                     if not game.level.is_blocking(int(position[0]), int(position[1]) - 1):
-                        game.player.move(0,-32)
+                        game.player.move(0, -32)
                 if event.key == pygame.K_LEFT or event.key == ord('a'):
                     position = game.player._get_pos()
                     if not game.level.is_blocking(int(position[0]) - 1, int(position[1])):
-                        game.player.move(-32,0)
+                        game.player.move(-32, 0)
                 if event.key == pygame.K_DOWN or event.key == ord('s'):
                     position = game.player._get_pos()
                     if not game.level.is_blocking(int(position[0]), int(position[1]) + 1):
-                        game.player.move(0,32)
+                        game.player.move(0, 32)
                 if event.key == pygame.K_RIGHT or event.key == ord('d'):
                     position = game.player._get_pos()
                     if not game.level.is_blocking(int(position[0]) + 1, int(position[1])):
-                        game.player.move(32,0)
+                        game.player.move(32, 0)
                 if event.key == ord('q'):
                     game_over = True
